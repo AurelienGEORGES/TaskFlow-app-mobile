@@ -1,13 +1,12 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { COULEURS } from '../styles/couleurs';
 
-/**
- * Carte affichant une tâche unique.
- * Entièrement pilotée par ses props : titre, categorie, terminee.
- */
-export default function TacheCard({ titre, categorie, terminee = false }) {
+export default function TacheCard({ titre, categorie, terminee = false, onPress, onSupprimer }) {
   return (
-    <View style={styles.carte}>
+    <Pressable
+      onPress={onPress}
+      style={({ pressed }) => [styles.carte, pressed && styles.carteAppuyee]}
+    >
       <View style={styles.contenu}>
         <Text style={styles.titre} numberOfLines={2}>
           {titre}
@@ -17,10 +16,17 @@ export default function TacheCard({ titre, categorie, terminee = false }) {
         </Text>
       </View>
 
-      <View style={styles.badge}>
-        <Text style={styles.badgeTexte}>{categorie}</Text>
+      <View style={styles.droite}>
+        <View style={styles.badge}>
+          <Text style={styles.badgeTexte}>{categorie}</Text>
+        </View>
+        {onSupprimer && (
+          <Pressable onPress={onSupprimer} hitSlop={8}>
+            <Text style={styles.supprimer}>Supprimer</Text>
+          </Pressable>
+        )}
       </View>
-    </View>
+    </Pressable>
   );
 }
 
@@ -40,6 +46,9 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     elevation: 1,
   },
+  carteAppuyee: {
+    opacity: 0.7,
+  },
   contenu: {
     flex: 1,
     gap: 4,
@@ -58,6 +67,10 @@ const styles = StyleSheet.create({
   statutAFaire: {
     color: COULEURS.muted,
   },
+  droite: {
+    alignItems: 'flex-end',
+    gap: 8,
+  },
   badge: {
     backgroundColor: COULEURS.accent,
     borderRadius: 999,
@@ -68,5 +81,9 @@ const styles = StyleSheet.create({
     fontSize: 11,
     fontWeight: '600',
     color: COULEURS.primaire,
+  },
+  supprimer: {
+    fontSize: 13,
+    color: COULEURS.danger,
   },
 });
